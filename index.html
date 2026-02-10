@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="not-authenticated">
+
+    <nav class="navbar navbar-expand navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#/">Enterprise App</a>
+            <div class="ms-auto">
+                <ul class="navbar-nav">
+                    <li class="nav-item role-logged-out"><a class="nav-link" href="#/login">Login</a></li>
+                    <li class="nav-item role-logged-out"><a class="nav-link" href="#/register">Register</a></li>
+                    
+                    <li class="nav-item dropdown role-logged-in">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="nav-user-name">User</a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><a class="dropdown-item" href="#/profile">Profile</a></li>
+                            <li><a class="dropdown-item" href="#/requests">My Requests</a></li>
+                            <li class="role-admin"><hr class="dropdown-divider"></li>
+                            <li class="role-admin"><a class="dropdown-item" href="#/accounts">Manage Accounts</a></li>
+                            <li class="role-admin"><a class="dropdown-item" href="#/departments">Departments</a></li>
+                            <li class="role-admin"><a class="dropdown-item" href="#/employees">Employees</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="app.logout()">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section id="login-page" class="page">
+            <div class="row justify-content-center">
+                <div class="col-md-4 card-form">
+                    <div class="card-form-header">Login</div>
+                    <div class="card-form-body">
+                        <form onsubmit="app.handleLogin(event)">
+                            <div class="mb-3"><label class="form-label">Email</label><input type="email" id="l-email" class="form-control" required></div>
+                            <div class="mb-3"><label class="form-label">Password</label><input type="password" id="l-pass" class="form-control" required></div>
+                            <button class="btn btn-primary w-100">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="register-page" class="page">
+            <div class="row justify-content-center">
+                <div class="col-md-4 card-form">
+                    <div class="card-form-header">Register</div>
+                    <div class="card-form-body">
+                        <form onsubmit="app.handleRegister(event)">
+                            <div class="mb-3"><label class="form-label">First Name</label><input type="text" id="r-first" class="form-control" required></div>
+                            <div class="mb-3"><label class="form-label">Last Name</label><input type="text" id="r-last" class="form-control" required></div>
+                            <div class="mb-3"><label class="form-label">Email</label><input type="email" id="r-email" class="form-control" required></div>
+                            <div class="mb-3"><label class="form-label">Password (min 6)</label><input type="password" id="r-pass" class="form-control" minlength="6" required></div>
+                            <button class="btn btn-success w-100">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="verify-email" class="page text-center">
+            <div class="py-5">
+                <h2>Email Verification</h2>
+                <p id="verify-msg" class="text-muted"></p>
+                <button class="btn btn-warning" onclick="app.simulateVerify()">✅ Simulate Email Verification</button>
+            </div>
+        </section>
+
+        <section id="profile" class="page">
+            <h2>My Profile</h2>
+            <div id="profile-card" class="card-form p-4"></div>
+        </section>
+
+        <section id="requests" class="page">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>My Requests</h2>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#requestModal">+ New Request</button>
+            </div>
+            <div class="custom-table-container">
+                <table class="custom-table">
+                    <thead><tr><th>Type</th><th>Items</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody id="req-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="accounts" class="page role-admin">
+            <h2>Account Management</h2>
+            <table class="custom-table">
+                <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Verified</th><th>Actions</th></tr></thead>
+                <tbody id="acc-table-body"></tbody>
+            </table>
+        </section>
+
+        <section id="departments" class="page role-admin">
+            <h2>Departments</h2>
+            <table class="custom-table">
+                <thead><tr><th>Name</th><th>Description</th></tr></thead>
+                <tbody id="dept-table-body"></tbody>
+            </table>
+        </section>
+    </div>
+
+    <div class="modal fade" id="requestModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form onsubmit="app.handleRequestSubmit(event)">
+                    <div class="modal-header"><h5 class="modal-title">New Request</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Type</label>
+                            <select id="req-type" class="form-select"><option>Equipment</option><option>Leave</option><option>Resources</option></select>
+                        </div>
+                        <label class="form-label">Items</label>
+                        <div id="req-items-container">
+                            <div class="d-flex gap-2 mb-2">
+                                <input type="text" class="form-control item-name" placeholder="Item Name" required>
+                                <input type="number" class="form-control item-qty" value="1" style="width:80px" required>
+                                <button type="button" class="btn btn-outline-primary" onclick="app.addReqRow()">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-primary w-100">Submit Request</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

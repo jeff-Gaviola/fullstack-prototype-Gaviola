@@ -1,0 +1,55 @@
+/* Phase 1: Logic CSS Rules */
+body { 
+    background-color: #f4f7f6; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* Auth State Toggles */
+body.not-authenticated .role-logged-in { display: none; }
+body.authenticated .role-logged-out { display: none; }
+.role-admin { display: none; }
+body.is-admin .role-admin { display: block; }
+
+/* UI Component Styling */
+.navbar { background-color: #212529 !important; }
+
+.custom-table { 
+    width: 100%; 
+    background: white; 
+    border-radius: 8px; 
+    border-collapse: collapse;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+}
+
+.custom-table th { 
+    background: #f8f9fa; 
+    padding: 12px; 
+    border-bottom: 2px solid #dee2e6;
+    font-size: 0.9rem;
+}
+
+.custom-table td { 
+    padding: 12px; 
+    border-bottom: 1px solid #eee; 
+    font-size: 0.95rem;
+}
+
+.card-form { 
+    background: white; 
+    border: 1px solid #dee2e6; 
+    border-radius: 8px; 
+    margin-top: 20px; 
+}
+
+.card-form-header { 
+    background: #f8f9fa; 
+    padding: 12px 15px; 
+    border-bottom: 1px solid #dee2e6; 
+    font-weight: bold; 
+}
+
+.card-form-body { padding: 20px; }
+.form-label { font-size: 0.85rem; font-weight: 600; color: #444; }
