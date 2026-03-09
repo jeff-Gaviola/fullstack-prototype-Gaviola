@@ -1,55 +1,52 @@
-/* Phase 1: Logic CSS Rules */
-body { 
-    background-color: #f4f7f6; 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-}
-
+/* Core Routing */
 .page { display: none; }
 .page.active { display: block; }
 
-/* Auth State Toggles */
-body.not-authenticated .role-logged-in { display: none; }
-body.authenticated .role-logged-out { display: none; }
-.role-admin { display: none; }
-body.is-admin .role-admin { display: block; }
+/* Role-Based Visibility */
+.not-authenticated .role-logged-in { display: none !important; }
+.authenticated .role-logged-out { display: none !important; }
+body:not(.is-admin) .role-admin { display: none !important; }
 
-/* UI Component Styling */
-.navbar { background-color: #212529 !important; }
-
-.custom-table { 
-    width: 100%; 
-    background: white; 
-    border-radius: 8px; 
-    border-collapse: collapse;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+/* GREEN ACTION BUTTONS */
+#add-account-btn, 
+#new-request-btn, 
+#add-dept-btn, 
+#submit-request-btn,
+.btn-success { 
+    background-color: #198754 !important; 
+    color: white !important; 
+    border: 1px solid #157347 !important;
 }
 
-.custom-table th { 
-    background: #f8f9fa; 
-    padding: 12px; 
-    border-bottom: 2px solid #dee2e6;
-    font-size: 0.9rem;
-}
+#add-account-btn:hover { background-color: #157347 !important; }
 
-.custom-table td { 
-    padding: 12px; 
-    border-bottom: 1px solid #eee; 
-    font-size: 0.95rem;
+/* Custom Table Action Buttons from Image */
+.btn-edit-outline { 
+    color: #0d6efd; 
+    border: 1px solid #0d6efd; 
+    background: #ffffff;
+    font-size: 0.85rem;
+    border-radius: 4px;
 }
+.btn-edit-outline:hover { background: #f0f7ff; }
 
-.card-form { 
-    background: white; 
-    border: 1px solid #dee2e6; 
-    border-radius: 8px; 
-    margin-top: 20px; 
+.btn-reset-outline { 
+    color: #ffc107; 
+    border: 1px solid #ffc107; 
+    background: #ffffff;
+    font-size: 0.85rem;
+    border-radius: 4px;
 }
+.btn-reset-outline:hover { background: #fffdf0; }
 
-.card-form-header { 
-    background: #f8f9fa; 
-    padding: 12px 15px; 
-    border-bottom: 1px solid #dee2e6; 
-    font-weight: bold; 
+.btn-delete-outline { 
+    color: #dc3545; 
+    border: 1px solid #dc3545; 
+    background: #ffffff;
+    font-size: 0.85rem;
+    border-radius: 4px;
 }
+.btn-delete-outline:hover { background: #fff5f5; }
 
-.card-form-body { padding: 20px; }
-.form-label { font-size: 0.85rem; font-weight: 600; color: #444; }
+/* Table styling */
+#accounts-tbody td { padding: 12px 8px; font-size: 0.95rem; }
