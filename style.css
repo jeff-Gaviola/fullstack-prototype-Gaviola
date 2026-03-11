@@ -1,52 +1,185 @@
-/* Core Routing */
+/* ── Core Routing ── */
 .page { display: none; }
 .page.active { display: block; }
 
-/* Role-Based Visibility */
-.not-authenticated .role-logged-in { display: none !important; }
-.authenticated .role-logged-out { display: none !important; }
-body:not(.is-admin) .role-admin { display: none !important; }
+/* ── Role-Based Visibility ── */
+.not-authenticated .role-logged-in  { display: none !important; }
+.authenticated .role-logged-out     { display: none !important; }
+body:not(.is-admin) .role-admin     { display: none !important; }
 
-/* GREEN ACTION BUTTONS */
-#add-account-btn, 
-#new-request-btn, 
-#add-dept-btn, 
-#submit-request-btn,
-.btn-success { 
-    background-color: #198754 !important; 
-    color: white !important; 
-    border: 1px solid #157347 !important;
+/* ── Add Account button (green) ── */
+#add-account-btn,
+#new-request-btn,
+#add-dept-btn,
+#submit-request-btn {
+  background-color: #198754 !important;
+  color: white !important;
+  border: 1px solid #157347 !important;
 }
-
 #add-account-btn:hover { background-color: #157347 !important; }
 
-/* Custom Table Action Buttons from Image */
-.btn-edit-outline { 
-    color: #0d6efd; 
-    border: 1px solid #0d6efd; 
-    background: #ffffff;
-    font-size: 0.85rem;
-    border-radius: 4px;
+/* ── Accounts table: light header, compact ── */
+#accounts-page .table thead.table-light th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #343a40;
 }
-.btn-edit-outline:hover { background: #f0f7ff; }
-
-.btn-reset-outline { 
-    color: #ffc107; 
-    border: 1px solid #ffc107; 
-    background: #ffffff;
-    font-size: 0.85rem;
-    border-radius: 4px;
+#accounts-tbody td {
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  vertical-align: middle;
 }
-.btn-reset-outline:hover { background: #fffdf0; }
 
-.btn-delete-outline { 
-    color: #dc3545; 
-    border: 1px solid #dc3545; 
-    background: #ffffff;
-    font-size: 0.85rem;
-    border-radius: 4px;
+/* ── Table action buttons ── */
+#accounts-tbody .btn-outline-primary {
+  color: #0d6efd;
+  border: 1px solid #0d6efd;
+  background: #fff;
+  font-size: 0.8rem;
+  padding: 2px 10px;
 }
-.btn-delete-outline:hover { background: #fff5f5; }
+#accounts-tbody .btn-outline-primary:hover { background: #e8f0fe; }
 
-/* Table styling */
-#accounts-tbody td { padding: 12px 8px; font-size: 0.95rem; }
+#accounts-tbody .btn-outline-secondary {
+  color: #6c757d;
+  border: 1px solid #6c757d;
+  background: #fff;
+  font-size: 0.8rem;
+  padding: 2px 10px;
+}
+#accounts-tbody .btn-outline-secondary:hover { background: #f0f0f0; }
+
+#accounts-tbody .btn-outline-danger {
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  background: #fff;
+  font-size: 0.8rem;
+  padding: 2px 10px;
+}
+#accounts-tbody .btn-outline-danger:hover { background: #fdf0f0; }
+
+/* ── Account form box ── */
+.account-form-box {
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 20px 24px;
+  max-width: 480px;
+  background: #fff;
+}
+.account-form-box h6 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 16px;
+}
+.account-form-box .form-label {
+  font-size: 0.85rem;
+  color: #495057;
+  margin-bottom: 4px;
+}
+.account-form-box .form-control-sm {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  padding: 5px 10px;
+  background-color: #fff;
+}
+.account-form-box .form-control-sm:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15);
+}
+.account-form-box .form-check-label { font-size: 0.875rem; }
+.account-form-box .btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  font-size: 0.85rem;
+}
+.account-form-box .btn-secondary { font-size: 0.85rem; }
+
+/* ══════════════════════════════════════════
+   PROFILE PAGE — matches screenshot style
+══════════════════════════════════════════ */
+
+/* Profile card: bordered, rounded, like screenshot */
+.profile-card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px 24px;
+  max-width: 320px;
+  background: #fff;
+}
+
+.profile-card h5 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: #111;
+}
+
+.profile-card .profile-email {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 12px;
+}
+
+.profile-card .profile-row {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+  color: #212529;
+}
+
+/* Edit Profile form panel (shown below card when editing) */
+.profile-edit-panel {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px 24px;
+  max-width: 420px;
+  background: #fff;
+  margin-top: 16px;
+}
+
+.profile-edit-panel .form-label {
+  font-size: 0.85rem;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+.profile-edit-panel .form-control {
+  font-size: 0.875rem;
+}
+
+/* Save Changes button — blue like "Get Started →" */
+.btn-profile-save {
+  background-color: #0d6efd;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.btn-profile-save:hover {
+  background-color: #0b5ed7;
+  color: #fff;
+}
+
+/* Request item rows */
+.req-item-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.req-qty { width: 80px; }
+
+/* Request item rows */
+.req-item-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.req-qty { width: 80px; }
