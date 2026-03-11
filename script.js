@@ -235,7 +235,90 @@ function renderProfile() {
   document.getElementById('profile-name').textContent     = fullName;
   document.getElementById('profile-email').textContent    = u.email;
   document.getElementById('profile-role').textContent     = capitalize(u.role);
-  document.getElementById('profile-verified').textContent = u.verified ? 'Yes ✅' : 'No ❌';
+  
+
+  // Always hide edit panel and show view card when rendering
+  const editPanel = document.getElementById('profile-edit-panel');
+  const viewCard  = document.getElementById('profile-view');
+  if (editPanel) editPanel.classList.add('d-none');
+  if (viewCard)  viewCard.classList.remove('d-none');
+}
+
+function showEditProfileForm() {
+  if (!currentUser) return;
+  document.getElementById('edit-fname').value    = currentUser.firstName || '';
+  document.getElementById('edit-lname').value    = currentUser.lastName  || '';
+  document.getElementById('edit-email').value    = currentUser.email;
+  document.getElementById('edit-password').value = '';
+  hideError(document.getElementById('edit-profile-error'));
+  hideError(document.getElementById('edit-profile-success'));
+  document.getElementById('profile-edit-panel').classList.remove('d-none');
+  document.getElementById('profile-edit-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function hideEditProfileForm() {
+  document.getElementById('profile-edit-panel').classList.add('d-none');
+}
+
+function handleEditProfileForm(e) {
+  e.preventDefault();
+  const errEl = document.getElementById('edit-profile-error');
+  const sucEl = document.getElementById('edit-profile-success');
+  hideError(errEl);
+  hideError(sucEl);
+
+  const firstName = document.getElementById('edit-fname').value.trim();
+  const lastName  = document.getElementById('edit-lname').value.trim();
+  const email     = document.getElementById('edit-email').value.trim().toLowerCase();
+  const password  = document.getElementById('edit-password').value;
+
+  if (!firstName || !lastName) return showError(errEl, 'First and last name are required.');
+  if (!email) return showError(errEl, 'Email is required.');
+  if (password && password.length < 6) return showError(errEl, 'Password must be at least 6 characters.');
+
+  const conflict = window.db.accounts.find(a => a.email === email && a.email !== currentUser.email);
+  if (conflict) return showError(errEl, 'That email is already in use by another account.');
+
+  const acc = window.db.accounts.find(a => a.email === currentUser.email);
+  if (!acc) return showError(errEl, 'Account not found.');
+
+  const oldEmail = acc.email;
+  acc.firstName = firstName;
+  acc.lastName  = lastName;
+  acc.email     = email;
+  if (password) acc.password = password;
+  if (oldEmail !== email) localStorage.setItem('auth_token', email);
+
+  currentUser = acc;
+  saveToStorage();
+
+  document.getElementById('nav-username').textContent = acc.role === 'admin' ? 'Admin' : acc.firstName;
+
+  sucEl.textContent = 'Profile updated successfully!';
+  sucEl.classList.remove('d-none');
+
+  setTimeout(() => {
+    hideEditProfileForm();
+    renderProfile();
+  }, 1500);
+
+  showToast('Profile updated!', 'success');
+}
+
+/* ─────────────────────────────────────────────
+   ACCOUNTS — ROLE RADIO HELPERS
+───────────────────────────────────────────── */
+function getSelectedRole() {
+  const radios = document.querySelectorAll('input[name="acc-role-radio"]');
+  for (const r of radios) { if (r.checked) return r.value; }
+  return 'user';
+}
+
+function setSelectedRole(role) {
+  const radios = document.querySelectorAll('input[name="acc-role-radio"]');
+  radios.forEach(r => { r.checked = r.value === role; });
+  const sel = document.getElementById('acc-role');
+  if (sel) sel.value = role;
 }
 
 /* ─────────────────────────────────────────────
@@ -259,7 +342,7 @@ function renderAccountsList() {
       <td>${acc.verified ? '✅' : '❌'}</td>
       <td>
         <button class="btn btn-sm btn-outline-primary me-1" onclick="editAccount('${esc(acc.email)}')">Edit</button>
-        <button class="btn btn-sm btn-outline-secondary me-1" onclick="resetPassword('${esc(acc.email)}')">Reset PW</button>
+        <button class="btn btn-sm btn-outline-secondary me-1" onclick="resetPassword('${esc(acc.email)}')">Reset Password</button>
         <button class="btn btn-sm btn-outline-danger" onclick="deleteAccount('${esc(acc.email)}')" ${isSelf ? 'disabled' : ''}>Delete</button>
       </td>
     `;
@@ -277,7 +360,7 @@ function editAccount(email) {
   document.getElementById('acc-lname').value      = acc.lastName;
   document.getElementById('acc-email').value      = acc.email;
   document.getElementById('acc-password').value   = '';
-  document.getElementById('acc-role').value       = acc.role;
+  setSelectedRole(acc.role);
   document.getElementById('acc-verified').checked = acc.verified;
 }
 
@@ -312,7 +395,7 @@ function handleAccountForm(e) {
   const lastName  = document.getElementById('acc-lname').value.trim();
   const email     = document.getElementById('acc-email').value.trim().toLowerCase();
   const password  = document.getElementById('acc-password').value;
-  const role      = document.getElementById('acc-role').value;
+  const role      = getSelectedRole();
   const verified  = document.getElementById('acc-verified').checked;
   hideError(err);
 
@@ -356,6 +439,7 @@ function showAccountForm() {
   document.getElementById('account-form').reset();
   document.getElementById('acc-edit-email').value = '';
   document.getElementById('account-form-title').textContent = 'Add/Edit Account';
+  setSelectedRole('user');
   hideError(document.getElementById('account-form-error'));
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -572,12 +656,19 @@ function populateDeptDropdown(selectId) {
 function renderRequestsTable() {
   const tbody = document.getElementById('requests-tbody');
   const empty = document.getElementById('requests-empty');
+  const table = document.querySelector('#requests-page .table-responsive');
   tbody.innerHTML = '';
   if (!currentUser) return;
 
   const mine = window.db.requests.filter(r => r.employeeEmail === currentUser.email);
-  if (!mine.length) { empty.classList.remove('d-none'); return; }
+  if (!mine.length) {
+    empty.classList.remove('d-none');
+    table.classList.add('d-none');
+    return;
+  }
+
   empty.classList.add('d-none');
+  table.classList.remove('d-none');
 
   mine.forEach(req => {
     const badgeClass = {
@@ -723,6 +814,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('login-form')?.addEventListener('submit', handleLogin);
   document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
   document.getElementById('simulate-verify-btn')?.addEventListener('click', handleSimulateVerify);
+
+  // Profile edit — wire up the 3 profile controls
+  document.getElementById('show-edit-profile-btn')?.addEventListener('click', showEditProfileForm);
+  document.getElementById('cancel-edit-profile-btn')?.addEventListener('click', hideEditProfileForm);
+  document.getElementById('edit-profile-form')?.addEventListener('submit', handleEditProfileForm);
 
   // Accounts
   document.getElementById('account-form')?.addEventListener('submit', handleAccountForm);
